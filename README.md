@@ -11,9 +11,9 @@ Rationale: It enhances scalability—adding new carriages or NPC types only requ
 2. FSM State Machine (State Pattern) (Future: Behavior Tree)
 Decision: Implemented a hierarchical state machine for NPC AI, paired with a node-based dialogue system.
 Rationale: NPCs must respond dynamically to player actions, time passage, and social changes. The hierarchical state machine provides clear, maintainable control over NPC behaviors (idle, work, protest, trade).
-3. Separate Carriage Loading (Modular Scenes)
-Decision: Each carriage is loaded as an independent additive scene, with the main scene managing global systems (time, player state, cross-carriage events).
-Rationale: 9 carriages form a large segmented world. Modular scene loading reduces initial load time, supports targeted updates (e.g., reloading only one carriage after player actions), and simplifies level design collaboration. Unloading unoccupied carriages optimizes memory efficiency.
+3. Separate Carriage Loading (including the carriage model and the items and npcs data inside the carriage)
+Decision: Each carriage is loaded asynchronously as an independent additive model, with the main game scene managing global systems (time, player state, cross-carriage events).
+Rationale: 9 carriages form a large segmented world. Modular carriage loading reduces initial load time, supports targeted updates (e.g., reloading only one carriage after player actions; only load the carriage that the player is currently inside and the carriagess that are next to the player's current carriage), and simplifies level design collaboration. Unloading unoccupied carriages optimizes memory efficiency.
 4. Inventory System (Tree Structure)
 Tree-structured inventory with nested backpacks, each divided into n*m grids. Items occupy x*y grids (no placement if insufficient space). Both players and NPCs have inventories—players can steal or purchase items from NPC backpacks.
 5. Excel Configuration System
@@ -24,10 +24,10 @@ Designed 6 core Excel configuration tables (Map, Achievement, Item, Multilingual
 - Multilingual Table: English-Chinese translations for in-game text.
 - Dialogue Table: NPC dialogue and conversation flow (next dialogue jumps).
 - NPC Table: Avatar/model paths, movement speeds, alert values, initial energy, random states, and interaction functions.
-6. YooAsset Resource Management
+6. YooAsset Resource Management (similar to Addressables)
 Managed all resources (JSON configs, character/item models, music, UI images) via YooAsset, packaged into the StreamingAssets folder. The game’s start screen only loads a minimal UI, with subsequent resources loaded dynamically. Supports future hot updates by separating core code from resources.
 7. Persistent Save System
-Implements world state persistence, recording: NPC inventory items, NPC stats (energy, favorability, charm, alert), conversation history, player inventory, item positions in carriages, NPC equipment, player’s held item, NPC positions, carriage object states (lockers, doors), riot data per carriage, and current player carriage ID. Auto-saves on exit and auto-loads on re-entry.
+Implements world state persistence, recording: NPC inventory items, NPC stats (energy, favorability, charm, alert), conversation history, player inventory, item positions in carriages, NPC equipment, player’s held item, NPC positions, carriage object states (lockers, doors), riot data per carriage, and current player carriage ID. Auto-saves on exit and auto-loads on re-entry. The data are stored in json format.
 8. Design Patterns
 - Singleton Pattern: Map Manager, Event Manager, Music Manager.
 - Object Pool Pattern: Manages UI prefabs (e.g., inventory items, grid cells) for efficient instantiation/hiding.
